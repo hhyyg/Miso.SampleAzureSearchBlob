@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Azure Search C# Sample</title>
+    <link href="//ajax.aspnetcdn.com/ajax/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/typehead.css" rel="stylesheet" />
+
+    <script src="~/Scripts/jquery-2.2.4.min.js"></script>
+    <script src="~/Scripts/bloodhound.min.js"></script>
+    <script src="~/Scripts/typeahead.bundle.min.js"></script>
+
+    <style>
+        em { 
+            font-size: 120%;
+            background-color:yellow;
+            font-weight:600;
+        }
+
+        .label {
+            font-size: 130%;
+        }
+    </style>
+    @RenderSection("Scripts", required: false)
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="page-header">
+                <h1>
+                    <a href="~/">
+                        Azure Search C# Sample
+                    </a>
+                </h1>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        @RenderBody()
+    </div>
+</body>
+</html>

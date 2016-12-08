@@ -1,0 +1,93 @@
+﻿@using Microsoft.Azure.Search.Models
+@model Miso.AzureSearchSample.Models.SearchFormModel
+@{
+    ViewBag.Title = "Search";
+    var result = Model.SearchResultLucene;
+}
+
+<form class="form-inline" role="search" id="submitform">
+    <div class="form-group">
+        <input type="search" name="@Html.NameFor(x => x.SearchText)"
+               autocomplete="off" size="80" placeholder="検索ワードを入力します"
+               class="form-control" value="@Html.ValueFor(x => x.SearchText)"
+               id="searchText"  data-provide="typeahead"/>
+    </div>
+    <button type="submit" id="search" class="btn btn-primary">Search</button>
+</form>
+
+<div class="col-md-5">
+    <h2>Results:</h2>
+
+    <p style="padding-top:20px">1 - <span class="text-primary">@result.Count</span> of <span class="text-primary">@result.Count</span></p>
+
+    <table>
+        <tr>
+            <th>Score</th>
+            <th>Name</th>
+        </tr>
+        @foreach (var item in result.Results)
+        {
+            <tr>
+                <td>@item.Score.ToString("0.000")</td>
+                <td>@item.Document["metadata_storage_path"]</td>
+            </tr>
+        }
+    </table>
+
+    <!-- Cycle through the search results -->
+    @foreach (var item in result.Results)
+    {
+        <h3>@item.Document["metadata_storage_name"]</h3>
+        <p><label class="label-info">Score: @item.Score</label></p>
+
+        <table class="table">
+            <tr>
+                <td>metadata_storage_content_type</td>
+                <td>@item.Document["metadata_storage_content_type"]</td>
+            </tr>
+            <tr>
+                <td>metadata_storage_size</td>
+                <td>@item.Document["metadata_storage_size"]</td>
+            </tr>
+            <tr>
+                <td>metadata_storage_content_md5</td>
+                <td>@(item.Document["metadata_storage_content_md5"])</td>
+            </tr>
+            <tr>
+                <td>metadata_storage_name</td>
+                <td>@item.Document["metadata_storage_name"]</td>
+            </tr>
+            <tr>
+                <td>metadata_storage_path</td>
+                <td><a href="@OutputBase64(item.Document["metadata_storage_path"])">URL to download</a></td>
+            </tr>
+            <tr>
+                <td>metadata_content_type</td>
+                <td>@item.Document["metadata_content_type"]</td>
+            </tr>
+            <tr>
+                <td>metadata_language</td>
+                <td>@item.Document["metadata_language"]</td>
+            </tr>
+        </table>
+        <p>@OutputHilightOrDocument(item, "content")</p>
+    }
+</div>
+
+@helper OutputBase64(object value)
+{
+    @System.Text.Encoding.UTF8.GetString(HttpServerUtility.UrlTokenDecode(value.ToString()));
+}
+
+@helper OutputHilightOrDocument(SearchResult item, string fieldName)
+{
+    if (item.Highlights != null && item.Highlights.ContainsKey(fieldName))
+    {
+        <ul>
+        @foreach (var hilight in item.Highlights[fieldName])
+        {
+            <li>@Html.Raw(hilight)</li>
+        }   
+        </ul>
+    }
+}
